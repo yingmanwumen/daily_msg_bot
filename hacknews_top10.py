@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime, timezone, timedelta
 
 
 def fetch_top_stories():
@@ -31,7 +32,30 @@ def format_stories_to_markdown(stories):
     return markdown_output
 
 
+def format_stories_for_telegram(stories):
+    telegram_output = "🔥 **Top 10 Hacker News Stories** 🔥\n\n"
+    tz = timezone(timedelta(hours=8))  # 东八区时区
+    for story in stories:
+        title = story.get("title", "No Title")
+        url = story.get("url", "No URL")
+        author = story.get("by", "Unknown Author")
+        score = story.get("score", "No Score")
+        time_unix = story.get("time", 0)
+        time_readable = datetime.fromtimestamp(time_unix, tz).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        telegram_output += f"✨ {title} ✨\n"
+        telegram_output += f"🔗 {url}\n"
+        telegram_output += f"👤 Author: {author}\n"
+        telegram_output += f"⭐ Score: {score}\n"
+        telegram_output += f"🕒 Published: {time_readable}  \n\n"
+    current_time = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
+    telegram_output += f"🕒 Updated Time: {current_time}"
+
+    return telegram_output
+
+
 if __name__ == "__main__":
     stories = fetch_top_stories()
-    markdown = format_stories_to_markdown(stories)
-    print(markdown)
+    output = format_stories_for_telegram(stories)
+    print(output)
