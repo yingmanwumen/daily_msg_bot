@@ -1,0 +1,41 @@
+name: daily message bot
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 1 * * *" # runs at 9:00 AM CST
+
+jobs:
+  update:
+    name: Daily Message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate messages
+        id: generate_message
+        run: |
+          python hacknews_top10.py >> messages.md
+          echo "::set-output name=script_output::$(cat messages.md)"
+
+      - name: send telegram message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ steps.generate_message.outputs.script_output }}
+
