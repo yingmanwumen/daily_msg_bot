@@ -29,7 +29,6 @@ jobs:
         id: generate_message
         run: |
           python hacknews_top10.py >> messages.md
-          echo "script_output=$(cat messages.md)" >> $GITHUB_OUTPUT
 
       - name: send telegram message
         uses: appleboy/telegram-action@master
@@ -37,5 +36,5 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ${{ steps.generate_message.outputs.script_output }}
+            $(cat messages.md)
 
