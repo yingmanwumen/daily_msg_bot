@@ -30,11 +30,14 @@ jobs:
         run: |
           python hacknews_top10.py >> messages.md
 
-      - name: send telegram message
+      - name: Read message content
+        id: read_message
+        run: echo "MESSAGE_CONTENT=$(cat messages.md)" >> $GITHUB_ENV
+
+      - name: Send telegram message
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            $(cat messages.md)
+          message: ${{ env.MESSAGE_CONTENT }}
 
