@@ -32,12 +32,12 @@ jobs:
 
       - name: Read message content
         id: read_message
-        run: echo "MESSAGE_CONTENT=$(cat messages.md)" >> $GITHUB_ENV
+        run: echo "CONTENT=$(cat messages.md)" >> $GITHUB_OUTPUT
 
       - name: Send telegram message
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: ${{ env.MESSAGE_CONTENT }}
+          message: ${{ steps.read_message.outputs.CONTENT }}
 
