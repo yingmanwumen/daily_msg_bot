@@ -32,7 +32,12 @@ jobs:
 
       - name: Read message content
         id: read_message
-        run: echo "CONTENT=$(cat messages.md)" >> $GITHUB_OUTPUT
+        run: |
+          {
+            echo 'CONTENT<<THIS_IS_EOF'
+            cat messages.md
+            echo 'THIS_IS_EOF'
+          } >> $GITHUB_OUTPUT
 
       - name: Send telegram message
         uses: appleboy/telegram-action@master
