@@ -5,7 +5,8 @@ on:
     branches:
       - master
   schedule:
-    - cron: "0 1 * * *" # runs at 9:00 AM CST
+    - cron: "0 0 * * *" # runs at 8:00 AM CST
+  workflow_dispatch:
 
 jobs:
   update:
